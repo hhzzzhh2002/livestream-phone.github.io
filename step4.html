@@ -244,24 +244,10 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         @keyframes scrollBarrage {
-            0% {
-                transform: translateY(650px);
-                opacity: 1;
-                background-color: rgba(var(--bg-r), var(--bg-g), var(--bg-b), 0.7);
-            }
-            50% {
-                transform: translateY(250px);
-                opacity: 1;
-            }
-            85% {
-                transform: translateY(50px);
-                opacity: 0.3;
-            }
-            100% {
-                transform: translateY(-50px);
-                opacity: 0;
-                background-color: rgba(0, 0, 0, 0.3);
-            }
+            0% { transform: translateY(650px); opacity: 1; background-color: rgba(var(--bg-r), var(--bg-g), var(--bg-b), 0.7); }
+            50% { transform: translateY(250px); opacity: 1; }
+            85% { transform: translateY(50px); opacity: 0.3; }
+            100% { transform: translateY(-50px); opacity: 0; background-color: rgba(0, 0, 0, 0.3); }
         }
         .emoji {
             position: absolute;
@@ -277,7 +263,7 @@
         }
         .countdown {
             position: absolute;
-            top: 30%;
+            top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 1000px;
@@ -314,7 +300,7 @@
             100% { transform: translate(0, 0) rotate(0deg); }
         }
 
-        /* 商品展示区样式 - 增强设计感 */
+        /* 商品展示区样式 */
         .product-showcase {
             position: absolute;
             bottom: 100px;
@@ -566,7 +552,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* 新添加的查看结果按钮样式 */
+        /* 查看结果按钮样式 */
         .result-button {
             position: absolute;
             top: 50%;
@@ -618,11 +604,144 @@
             opacity: 1;
             visibility: visible;
         }
+
+        /* 手机屏幕适配 */
+        @media only screen and (max-width: 428px) {
+            .container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 428px;
+                max-height: 926px;
+                border-radius: 0;
+            }
+            .top-section {
+                top: 5px;
+                height: 60px;
+                padding: 5px;
+            }
+            .header {
+                width: 45%;
+                height: 50px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .image-grid {
+                width: 50%;
+                height: 50px;
+            }
+            .image-grid img {
+                width: 40px;
+                height: 40px;
+            }
+            .content {
+                top: 70px;
+                height: 500px;
+                padding: 10px;
+                flex-direction: column;
+                align-items: center;
+            }
+            .live-window {
+                width: 90%;
+                height: 60%;
+                margin-bottom: 10px;
+            }
+            .video-container {
+                width: 90%;
+                height: 35%;
+                gap: 5px;
+            }
+            .video-window {
+                height: 31%;
+            }
+            .decorations-inside {
+                font-size: 14px;
+                padding: 5px 10px;
+            }
+            .progress-bar {
+                top: 85%;
+                left: 10px;
+                width: calc(100% - 20px);
+                height: 30px;
+            }
+            .progress-text {
+                font-size: 16px;
+            }
+            .progress-emoji {
+                font-size: 30px;
+            }
+            .footer {
+                height: 150px;
+                padding: 10px;
+            }
+            .barrage div {
+                font-size: 16px;
+                line-height: 30px;
+                min-height: 30px;
+                padding: 0 15px;
+            }
+            @keyframes scrollBarrage {
+                0% { transform: translateY(130px); }
+                50% { transform: translateY(60px); }
+                85% { transform: translateY(20px); }
+                100% { transform: translateY(-20px); }
+            }
+            .emoji {
+                font-size: 20px;
+            }
+            @keyframes fall {
+                0% { transform: translateY(-50px); }
+                50% { transform: translateY(100px); }
+                100% { transform: translateY(200px); }
+            }
+            .countdown {
+                font-size: 200px;
+            }
+            .capture-box {
+                border-width: 1px;
+            }
+            .product-showcase {
+                bottom: 10px;
+                right: 10px;
+                width: 200px;
+                padding: 10px;
+            }
+            .product-title {
+                font-size: 16px;
+            }
+            .product-thumbnail {
+                height: 100px;
+            }
+            .product-description {
+                font-size: 12px;
+            }
+            .product-price {
+                font-size: 18px;
+            }
+            .product-button {
+                padding: 8px 0;
+                font-size: 12px;
+            }
+            .product-tag {
+                font-size: 10px;
+                padding: 3px 6px;
+            }
+            .product-stats {
+                font-size: 10px;
+                padding: 5px 10px;
+            }
+            .result-button {
+                padding: 10px 20px;
+                font-size: 16px;
+            }
+            .redirect-countdown {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 添加光晕效果 -->
         <div class="glow-effect" style="top: 30%; left: 20%;"></div>
         <div class="glow-effect" style="top: 60%; right: 20%; background: radial-gradient(circle, rgba(255, 107, 107, 0.2) 0%, transparent 70%);"></div>
         
@@ -678,7 +797,6 @@
         <div class="footer">
             <div class="barrage" id="barrageContainer"></div>
             
-            <!-- 商品展示区 - 增强设计感 -->
             <div class="product-showcase" id="productShowcase">
                 <div class="product-tag">限时特惠</div>
                 <div class="product-header">
@@ -698,10 +816,8 @@
 
         <div class="countdown" id="countdown"></div>
         
-        <!-- 新添加的查看结果按钮 -->
         <button class="result-button" id="resultButton">点击查看最终售卖情况</button>
         
-        <!-- 新添加的倒计时提示 -->
         <div class="redirect-countdown" id="redirectCountdown"></div>
     </div>
 
@@ -722,7 +838,6 @@
         let isGameOver = false;
         let countdownStarted = false;
         
-        // 新添加的变量
         const resultButton = document.getElementById('resultButton');
         const redirectCountdown = document.getElementById('redirectCountdown');
         let isWin = false;
@@ -762,26 +877,21 @@
             "全场最佳毫无悬念！加油！要是动作幅度再大一点就好了！！"
         ];
 
-        // 商品相关变量和函数
         const productButton = document.getElementById('productButton');
         const productThumbnail = document.getElementById('productThumbnail');
         
-        // 设置商品缩略图（使用base64编码的图片数据，避免文件路径问题）
-        // 这里会在脚本加载时动态生成一个示例缩略图
         function generatePlaceholderImage() {
             const canvas = document.createElement('canvas');
             canvas.width = 300;
             canvas.height = 180;
             const ctx = canvas.getContext('2d');
             
-            // 绘制渐变背景
             const gradient = ctx.createLinearGradient(0, 0, 300, 180);
             gradient.addColorStop(0, '#FF6B6B');
             gradient.addColorStop(1, '#4A00E0');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, 300, 180);
             
-            // 添加纹理
             for (let i = 0; i < 20; i++) {
                 ctx.beginPath();
                 ctx.arc(
@@ -795,7 +905,6 @@
                 ctx.fill();
             }
             
-            // 绘制文字
             ctx.font = 'bold 24px Arial';
             ctx.fillStyle = 'white';
             ctx.textAlign = 'center';
@@ -810,21 +919,16 @@
             return canvas.toDataURL('image/png');
         }
         
-        // 设置默认缩略图
         productThumbnail.src = generatePlaceholderImage();
         
-        // 商品点击事件 - 跳转到数字身份定制页面
         productButton.addEventListener('click', function() {
-            // 这里使用相对路径，假设您的数字身份定制页面在同一目录下
             window.location.href = 'digital_identity.html';
         });
         
-        // 也可以点击缩略图跳转
         productThumbnail.addEventListener('click', function() {
             window.location.href = 'digital_identity.html';
         });
         
-        // 尝试加载真实缩略图（如果存在）
         function loadProductThumbnail() {
             const img = new Image();
             img.onload = function() {
@@ -832,16 +936,12 @@
             };
             img.onerror = function() {
                 console.log("无法加载商品缩略图，使用默认图像");
-                // 已经设置了默认图像，所以这里不需要额外操作
             };
-            // 尝试加载商品缩略图（使用相对路径）
             img.src = 'product_thumbnail.png';
         }
         
-        // 尝试加载缩略图
         loadProductThumbnail();
         
-        // 添加商品弹窗消息到弹幕
         function addProductBarrages() {
             const productMessages = [
                 "这个数字身份定制也太酷了吧！",
@@ -851,7 +951,6 @@
                 "这个价格真的很划算了，我已经下单了！"
             ];
             
-            // 每隔一段时间添加一条商品相关弹幕
             setInterval(() => {
                 const randomUser = userNames[Math.floor(Math.random() * userNames.length)];
                 const randomMessage = productMessages[Math.floor(Math.random() * productMessages.length)];
@@ -867,10 +966,9 @@
                 div.style.setProperty('--bg-b', b);
                 barrageContainer.appendChild(div);
                 setTimeout(() => div.remove(), 12000);
-            }, 15000); // 每15秒添加一条商品弹幕
+            }, 15000);
         }
         
-        // 启动商品弹幕
         addProductBarrages();
 
         let trackIndex = 0;
@@ -900,29 +998,26 @@
             generateBarrage();
         }
 
-        // 生成彩色空心方框，仅限实时窗口
         function generateCaptureBox() {
             const box = document.createElement('div');
             box.className = 'capture-box';
-            const width = Math.random() * 200 + 50; // 50-250px
+            const width = Math.random() * 200 + 50;
             const height = Math.random() * 200 + 50;
-            const maxLeft = 702 - width; // 实时窗口宽度65% ≈ 702px
-            const maxTop = 1098 - height; // 实时窗口高度109.8% ≈ 1098px
+            const maxLeft = 702 - width;
+            const maxTop = 1098 - height;
             box.style.width = `${width}px`;
             box.style.height = `${height}px`;
-            box.style.left = `${Math.random() * maxLeft + 20}px`; // +20px考虑content的padding
-            box.style.top = `${Math.random() * maxTop + 120}px`; // +120px考虑top偏移
+            box.style.left = `${Math.random() * maxLeft + 20}px`;
+            box.style.top = `${Math.random() * maxTop + 120}px`;
             
-            // 使用更艺术的颜色
             const hue = Math.floor(Math.random() * 360);
             box.style.borderColor = `hsl(${hue}, 80%, 60%)`;
             box.style.borderWidth = '3px';
             
-            liveWindow.appendChild(box); // 添加到实时窗口
+            liveWindow.appendChild(box);
             setTimeout(() => box.remove(), 3000);
         }
 
-        // 每200ms生成一个方框，仅在无动作时
         setInterval(() => {
             if (!countdownStarted) generateCaptureBox();
         }, 200);
@@ -948,7 +1043,6 @@
             prevFrame = currentFrame;
             generateEmojis(motionScore);
 
-            // 检测到动作时开始倒计时
             if (motionScore >= 50 && !countdownStarted) {
                 startCountdown();
             }
@@ -966,7 +1060,6 @@
                 emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                 emoji.style.left = `${Math.random() * 100}%`;
                 emoji.style.top = '-50px';
-                // 添加随机旋转
                 emoji.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
                 container.appendChild(emoji);
 
@@ -979,7 +1072,6 @@
                         progressBar.style.width = `${progressPercentage}%`;
                         progressText.textContent = `${Math.round(progressPercentage)}%`;
 
-                        // 更新表情位置，100%时停在右边
                         progressEmoji.style.left = progressPercentage >= 100 ? `${progressBarContainer.offsetWidth - 60}px` : `calc(${progressPercentage}% - 20px)`;
                         if (progressPercentage >= 100) {
                             progressEmoji.textContent = '🥳';
@@ -1036,7 +1128,6 @@
                         }
                         isGameOver = true;
                         
-                        // 游戏结束后显示按钮和倒计时
                         setTimeout(() => {
                             showResultButton();
                             startRedirectCountdown();
@@ -1046,7 +1137,6 @@
             }, 500);
         }
         
-        // 添加鼠标跟随效果
         document.addEventListener('mousemove', (e) => {
             const glowElements = document.querySelectorAll('.glow-effect');
             const mouseX = e.clientX;
@@ -1060,7 +1150,6 @@
                 const offsetX = (mouseX - containerX) / 20;
                 const offsetY = (mouseY - containerY) / 20;
                 
-                // 添加一些随机性，使每个光晕移动不同
                 const randomX = Math.sin(Date.now() / 1000 + index) * 20;
                 const randomY = Math.cos(Date.now() / 1000 + index) * 20;
                 
@@ -1068,12 +1157,10 @@
             });
         });
         
-        // 新添加的函数 - 显示结果按钮
         function showResultButton() {
             resultButton.classList.add('visible');
         }
         
-        // 新添加的函数 - 开始倒计时自动跳转
         function startRedirectCountdown() {
             redirectCountdown.classList.add('visible');
             secondsLeft = 10;
@@ -1090,12 +1177,10 @@
             }, 1000);
         }
         
-        // 新添加的函数 - 更新倒计时显示
         function updateRedirectCountdown() {
             redirectCountdown.textContent = `${secondsLeft}秒后自动跳转...`;
         }
         
-        // 新添加的函数 - 跳转到结果页面
         function redirectToResultPage() {
             if (isWin) {
                 window.location.href = 'poster_files/step5.html';
@@ -1104,11 +1189,28 @@
             }
         }
         
-        // 新添加的事件监听器 - 按钮点击跳转
         resultButton.addEventListener('click', function() {
             clearInterval(redirectTimer);
             redirectToResultPage();
         });
+
+        // 窗口大小调整时更新布局
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            if (width <= 428) {
+                liveWindow.style.width = '90%';
+                liveWindow.style.height = '60%';
+                liveWindow.style.left = '50%';
+                liveWindow.style.transform = 'translateX(-50%)';
+            } else {
+                liveWindow.style.width = '65%';
+                liveWindow.style.height = '109.8%';
+                liveWindow.style.left = '0';
+                liveWindow.style.transform = 'none';
+            }
+        });
     </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92d89ad3485b53ce',t:'MTc0NDE4NzAzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
