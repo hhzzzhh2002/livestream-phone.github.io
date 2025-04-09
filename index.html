@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>表情识别提示</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      max-width: 1080px;
+      max-height: 1920px;
+      aspect-ratio: 9 / 16;
+    }
+
+    video, canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.8s ease-in-out;
+    }
+
+    #cameraVideo { z-index: 1; transform: scaleX(-1); }
+    #waitVideo { z-index: 2; }
+    #step2Video { z-index: 3; opacity: 0; }
+    canvas { z-index: 4; }
+
+    .instruction {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #00ffff;
+      font-size: 2.5rem;
+      text-align: center;
+      line-height: 1.2;
+      z-index: 10;
+      pointer-events: none;
+      animation: fadeInOut 6s ease-in-out infinite;
+      text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+    }
+
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0; transform: translateY(-20px); }
+      50% { opacity: 1; transform: translateY(0); }
+    }
+
+    .progress-bar-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40%;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      z-index: 10;
+      box-shadow: 0 0 10px #00ffff;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #00ffff, #ff00ff);
+      box-shadow: 0 0 15px #00ffff;
+      transition: width 0.1s linear;
+    }
+
+    /* 针对 iPhone 16 Pro 的调整 */
+    @media only screen and (max-width: 430px) and (max-height: 932px) {
+      .container {
+        max-width: 430px;
+        max-height: 932px;
+      }
+
+      .instruction {
+        font-size: 1.5rem;
+        top: 35%;
+      }
+
+      .progress-bar-container {
+        width: 50%;
+        height: 15px;
+        top: 45%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <video id="cameraVideo" autoplay muted playsinline></video>
+    <video id="waitVideo" autoplay muted loop playsinline>
+      <source src="videos/wait.mp4" type="video/mp4">
+    </video>
+    <video id="step2Video" muted playsinline>
+      <source src="videos/step2.mp4" type="video/mp4">
+    </video>
+    <canvas id="canvas"></canvas>
+    <div class="instruction" id="instruction">请做出表情<br>并静止五秒</div>
+    <div class="progress-bar-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+
+  <script>
+    async function setupCamera() {
+      const video = document.getElementById('cameraVideo');
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "user",
+          },
+          audio: false
+        });
+        video.srcObject = stream;
+
+        const videoTrack = stream.getVideoTracks()[0];
+        console.log("当前摄像头:", videoTrack.label);
+        alert("当前摄像头: " + videoTrack.label);
+      } catch (err) {
+        console.error("摄像头启用失败:", err);
+        alert("摄像头启用失败: " + err.message);
+      }
+      return new Promise(resolve => {
+        video.onloadedmetadata = () => {
+          video.play();
+          console.log("视频分辨率:", video.videoWidth, video.videoHeight);
+          resolve(video);
+        };
+      });
+    }
+
+    async function loadModels() {
+      try {
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri('./models'),
+          faceapi.nets.faceLandmark68Net.loadFromUri('./models')
+        ]);
+        console.log("模型加载成功");
+      } catch (err) {
+        console.error("模型加载失败:", err);
+        alert("模型加载失败: " + err.message);
+      }
+    }
+
+    async function detectFaces() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      const waitVideo = document.getElementById('waitVideo');
+      const step2Video = document.getElementById('step2Video');
+      const instruction = document.getElementById('instruction');
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
+
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      faceapi.matchDimensions(canvas, { width: canvas.width, height: canvas.height });
+
+      let faceDetectedFrames = 0;
+      const requiredFrames = 50;
+      let lastFaceDetectionTime = Date.now();
+      let progressCompleted = false;
+
+      step2Video.addEventListener('ended', () => {
+        window.location.href = "step3.html";
+      });
+
+      const detectionInterval = setInterval(async () => {
+        if (progressCompleted) return;
+
+        const detections = await faceapi
+          .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
+          .withFaceLandmarks();
+
+        const resizedDetections = faceapi.resizeResults(detections, {
+          width: canvas.width,
+          height: canvas.height
+        });
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.scale(-1, 1);
+        ctx.translate(-canvas.width, 0);
+
+        if (resizedDetections.length > 0) {
+          lastFaceDetectionTime = Date.now();
+          waitVideo.style.opacity = '0';
+          faceDetectedFrames++;
+
+          resizedDetections.forEach(result => {
+            const box = result.detection.box;
+
+            ctx.strokeStyle = 'rgba(0, 255, 255, 0.8)';
+            ctx.lineWidth = 4;
+            ctx.shadowColor = '#00ffff';
+            ctx.shadowBlur = 15;
+            ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+            result.landmarks.positions.forEach(pt => {
+              ctx.beginPath();
+              const radius = canvas.width * 0.0025;
+              ctx.arc(pt.x, pt.y, radius, 0, 2 * Math.PI);
+              ctx.fillStyle = '#ff00ff';
+              ctx.shadowColor = '#ff00ff';
+              ctx.shadowBlur = 10;
+              ctx.fill();
+            });
+          });
+        } else {
+          if (Date.now() - lastFaceDetectionTime > 2000) {
+            waitVideo.style.opacity = '1';
+            faceDetectedFrames = 0;
+          }
+        }
+
+        ctx.restore();
+
+        const progress = Math.min((faceDetectedFrames / requiredFrames) * 100, 100);
+        progressBar.style.width = `${progress}%`;
+
+        if (faceDetectedFrames >= requiredFrames && !progressCompleted) {
+          progressCompleted = true;
+          instruction.style.opacity = '0';
+          progressContainer.style.opacity = '0';
+          waitVideo.style.opacity = '0';
+          canvas.style.opacity = '0';
+          video.style.opacity = '0';
+          step2Video.currentTime = 0;
+          step2Video.style.opacity = '1';
+          step2Video.play();
+          clearInterval(detectionInterval);
+          setTimeout(() => {
+            instruction.style.display = 'none';
+            progressContainer.style.display = 'none';
+            waitVideo.style.display = 'none';
+            canvas.style.display = 'none';
+            video.style.display = 'none';
+          }, 800);
+        }
+      }, 100);
+    }
+
+    async function main() {
+      try {
+        const video = await setupCamera();
+        await loadModels();
+        detectFaces();
+      } catch (err) {
+        console.error("初始化失败:", err);
+        alert("初始化失败: " + err.message);
+      }
+    }
+
+    main();
+  </script>
+</body>
+</html>
