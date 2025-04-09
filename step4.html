@@ -613,129 +613,132 @@
                 max-width: 428px;
                 max-height: 926px;
                 border-radius: 0;
+                overflow-y: auto; /* 允许垂直滚动 */
             }
             .top-section {
-                top: 5px;
+                top: 10px;
                 height: 60px;
                 padding: 5px;
             }
             .header {
-                width: 45%;
-                height: 50px;
-            }
-            .header h1 {
-                font-size: 24px;
-            }
-            .image-grid {
                 width: 50%;
                 height: 50px;
             }
+            .header h1 {
+                font-size: 28px;
+            }
+            .image-grid {
+                width: 45%;
+                height: 50px;
+            }
             .image-grid img {
-                width: 40px;
-                height: 40px;
+                width: 45px;
+                height: 45px;
             }
             .content {
-                top: 70px;
-                height: 500px;
+                top: 80px;
+                height: 60%; /* 调整高度以适应手机屏幕 */
                 padding: 10px;
                 flex-direction: column;
                 align-items: center;
             }
             .live-window {
-                width: 90%;
-                height: 60%;
+                width: 100%;
+                height: 55%; /* 调整实时窗口高度 */
                 margin-bottom: 10px;
             }
             .video-container {
-                width: 90%;
-                height: 35%;
-                gap: 5px;
+                width: 100%;
+                height: 40%; /* 调整视频容器高度 */
+                gap: 8px;
             }
             .video-window {
-                height: 31%;
+                height: 32%;
             }
             .decorations-inside {
-                font-size: 14px;
+                font-size: 16px;
                 padding: 5px 10px;
             }
             .progress-bar {
-                top: 85%;
+                top: 80%; /* 调整进度条位置 */
                 left: 10px;
                 width: calc(100% - 20px);
-                height: 30px;
+                height: 40px;
             }
             .progress-text {
-                font-size: 16px;
+                font-size: 18px;
             }
             .progress-emoji {
-                font-size: 30px;
+                font-size: 36px;
             }
             .footer {
-                height: 150px;
+                height: 20%; /* 调整底部高度 */
                 padding: 10px;
+                bottom: 0;
             }
             .barrage div {
-                font-size: 16px;
+                font-size: 18px;
                 line-height: 30px;
                 min-height: 30px;
                 padding: 0 15px;
             }
             @keyframes scrollBarrage {
-                0% { transform: translateY(130px); }
-                50% { transform: translateY(60px); }
+                0% { transform: translateY(150px); }
+                50% { transform: translateY(70px); }
                 85% { transform: translateY(20px); }
                 100% { transform: translateY(-20px); }
             }
             .emoji {
-                font-size: 20px;
+                font-size: 24px;
             }
             @keyframes fall {
                 0% { transform: translateY(-50px); }
-                50% { transform: translateY(100px); }
-                100% { transform: translateY(200px); }
+                50% { transform: translateY(150px); }
+                100% { transform: translateY(300px); }
             }
             .countdown {
-                font-size: 200px;
+                font-size: 150px; /* 调整倒计时字体大小 */
             }
             .capture-box {
-                border-width: 1px;
+                border-width: 2px;
             }
             .product-showcase {
-                bottom: 10px;
+                bottom: 25%; /* 调整商品展示区位置 */
                 right: 10px;
-                width: 200px;
-                padding: 10px;
+                width: 80%;
+                max-width: 300px;
+                padding: 15px;
             }
             .product-title {
-                font-size: 16px;
-            }
-            .product-thumbnail {
-                height: 100px;
-            }
-            .product-description {
-                font-size: 12px;
-            }
-            .product-price {
                 font-size: 18px;
             }
+            .product-thumbnail {
+                height: 120px;
+            }
+            .product-description {
+                font-size: 14px;
+            }
+            .product-price {
+                font-size: 20px;
+            }
             .product-button {
-                padding: 8px 0;
-                font-size: 12px;
+                padding: 10px 0;
+                font-size: 14px;
             }
             .product-tag {
-                font-size: 10px;
-                padding: 3px 6px;
+                font-size: 12px;
+                padding: 4px 8px;
             }
             .product-stats {
-                font-size: 10px;
-                padding: 5px 10px;
+                font-size: 12px;
+                padding: 6px 12px;
             }
             .result-button {
-                padding: 10px 20px;
-                font-size: 16px;
+                padding: 12px 24px;
+                font-size: 20px;
             }
             .redirect-countdown {
-                font-size: 14px;
+                font-size: 16px;
             }
         }
     </style>
@@ -1199,10 +1202,10 @@
             const width = window.innerWidth;
             const height = window.innerHeight;
             if (width <= 428) {
-                liveWindow.style.width = '90%';
-                liveWindow.style.height = '60%';
-                liveWindow.style.left = '50%';
-                liveWindow.style.transform = 'translateX(-50%)';
+                liveWindow.style.width = '100%';
+                liveWindow.style.height = '55%';
+                liveWindow.style.left = '0';
+                liveWindow.style.transform = 'none';
             } else {
                 liveWindow.style.width = '65%';
                 liveWindow.style.height = '109.8%';
@@ -1212,5 +1215,5 @@
         });
     </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92d89ad3485b53ce',t:'MTc0NDE4NzAzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'92d9264baef37bbd',t:'MTc0NDE5Mjc0NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
